@@ -1,13 +1,9 @@
 <template>
   <div>
-    <ul>
-      <li v-for="(val, index) in arr" :key="index">
-        {{ val }}
-      </li>
-    </ul>
-    <button @click="revBtn">数组翻转</button>
-    <button @click="sliceBtn">截取前3个</button>
-    <button @click="updateBtn">更新第一个元素值</button>
+    <p :class="{ active: isShow }">我是动态class</p>
+    <button @click="change">切换</button>
+    <p :style="{ fontSize: fz + 'px' }">我是动态style</p>
+    <button @click="changeBig">点击我加大字体</button>
   </div>
 </template>
 
@@ -16,28 +12,27 @@ export default {
   name: "Practise3App",
 
   data() {
-    return { arr: [5, 3, 9, 2, 1] };
+    return {
+      isShow: "true",
+      fz: 20,
+    };
   },
 
   mounted() {},
 
   methods: {
-    revBtn() {
-      this.arr.reverse();
+    change() {
+      this.isShow = !this.isShow;
     },
-    sliceBtn() {
-      this.arr = this.arr.splice(0, 3);
-    },
-    updateBtn() {
-      // 更新第一个元素值，2种方法
-      // 1：直接赋值覆盖
-      // this.arr = [100, 3, 9, 2, 1];
-      // 2:利用vue的$set()方法修改制定位置的值
-      this.$set(this.arr, 0, 1000);
+    changeBig() {
+      this.fz++;
     },
   },
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
+.active {
+  background-color: red;
+}
 </style>
