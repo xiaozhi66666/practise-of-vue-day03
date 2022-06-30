@@ -1,63 +1,137 @@
 <template>
-  <div>
-    <ul>
-      <li
-        v-for="(item, index) in navs"
-        :key="index"
-        :class="{ active: index === activeIndex }"
-        @click="activeFn(index)"
-      >
-        <!-- 利用动态类名设置，判断当前点击保存下来的索引是否与遍历出来的li是否相等，如果相等就让这个类显示，否则就不显示 -->
-        {{ item }}
-      </li>
-    </ul>
+  <div id="app">
+    <div class="container">
+      <!-- 顶部框模块 -->
+      <div class="form-group">
+        <div class="input-group">
+          <h4>品牌管理</h4>
+        </div>
+      </div>
+
+      <!-- 数据表格 -->
+      <table class="table table-bordered table-hover mt-2">
+        <thead>
+          <tr>
+            <th>编号</th>
+            <th>资产名称</th>
+            <th>价格</th>
+            <th>创建时间</th>
+            <th>操作</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="item in list" :key="item.id">
+            <td>{{ item.id }}</td>
+            <td>{{ item.name }}</td>
+
+            <!-- 如果价格超过100，就有red这个类 -->
+            <td :class="{ red: item.price > 100 }">{{ item.price }}</td>
+            <td>{{ item.time | initTime }}</td>
+            <td><a href="#" @click.prevent="delFn(item.id)">删除</a></td>
+          </tr>
+          <!-- <tr style="background-color: #EEE">
+              <td>统计:</td>
+              <td colspan="2">总价钱为: 0</td>
+              <td colspan="2">平均价: 0</td>
+          </tr> -->
+        </tbody>
+        <!-- 
+        <tfoot >
+          <tr>
+            <td colspan="5" style="text-align: center">暂无数据</td>
+          </tr>
+        </tfoot>
+            -->
+      </table>
+
+      <!-- 添加资产 -->
+      <form class="form-inline" style="display: flex">
+        <div class="form-group">
+          <div class="input-group">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="资产名称"
+              v-model.trim="name"
+            />
+          </div>
+        </div>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <div class="form-group">
+          <div class="input-group">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="价格"
+              v-model.number="price"
+            />
+          </div>
+        </div>
+        &nbsp;&nbsp;&nbsp;&nbsp;
+        <!-- 阻止表单提交 -->
+        <button class="btn btn-primary" @click.prevent="addFn">添加资产</button>
+      </form>
+    </div>
   </div>
 </template>
 
 <script>
+// 引入bootstrap.css
+import "bootstrap/dist/css/bootstrap.min.css";
+// 引入第三方moment模块包
+import moment from "moment";
+// 1. 明确需求
+// 2. 标签+样式+默认数据
+// 3. 下载bootstrap, main.js引入bootstrap.css
+// 4. 把list数组 - 铺设表格
+// 5. 修改价格颜色
 export default {
-  name: "Practise3App",
-
+  // 定义一个时间格式过滤器
+  filters: {
+    initTime(val) {
+      return moment(val).format("YYYY--MM--DD--ddd--h:mm:ss a");
+    },
+  },
   data() {
     return {
-      // 数据
-      navs: ["大学起点", "高中起点", "初中起点", "小学起点"],
-      activeIndex: 0, //设置一个变量来保存当前点击到的index
+      list: [
+        { id: 100, name: "外套", price: 199, time: new Date("2010-08-12") },
+        { id: 101, name: "裤子", price: 34, time: new Date("2013-09-01") },
+        { id: 102, name: "鞋", price: 25.4, time: new Date("2018-11-22") },
+        { id: 103, name: "头发", price: 19900, time: new Date("2020-12-12") },
+      ],
+      name: "",
+      price: 0,
     };
   },
-
-  mounted() {},
-
   methods: {
-    // 添加方法点击谁就将谁的index保存下来给一个变量
-    activeFn(val) {
-      // val代表当前索引
-      // console.log(val);
-      this.activeIndex = val;
+    delFn(id) {
+      // 获取当前点击的tr的index
+      const index = this.list.findIndex((item) => item.id == id);
+      // 数组删除splice()
+      this.list.splice(index, 1);
+    },
+    addFn() {
+      //添加判断
+      if (this.name.trim().length == 0 || this.price === 0) {
+        return alert("请填写完整的信息");
+      }
+      // 根据输入框生成的信息生成新的对象
+      const obj = {
+        id: this.list[this.list.length - 1].id + 1,
+        name: this.name,
+        price: this.price,
+        time: new Date(),
+      };
+      // 数组添加新对象
+      this.list.push(obj);
     },
   },
 };
 </script>
 
-<style scoped>
-ul {
-  list-style: none;
-  border-radius: 10px;
-  width: 400px;
-  overflow: hidden;
-  padding: 0;
-}
-ul li {
-  float: left;
-  width: 100px;
-  height: 40px;
-  background-color: #ccc;
-  color: #fff;
-  text-align: center;
-  line-height: 40px;
-  cursor: pointer;
-}
-li.active {
-  background-color: blue;
+<style >
+.red {
+  color: red;
 }
 </style>
