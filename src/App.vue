@@ -1,9 +1,16 @@
 <template>
   <div>
-    <p :class="{ active: isShow }">我是动态class</p>
-    <button @click="change">切换</button>
-    <p :style="{ fontSize: fz + 'px' }">我是动态style</p>
-    <button @click="changeBig">点击我加大字体</button>
+    <ul>
+      <li
+        v-for="(item, index) in navs"
+        :key="index"
+        :class="{ active: index === activeIndex }"
+        @click="activeFn(index)"
+      >
+        <!-- 利用动态类名设置，判断当前点击保存下来的索引是否与遍历出来的li是否相等，如果相等就让这个类显示，否则就不显示 -->
+        {{ item }}
+      </li>
+    </ul>
   </div>
 </template>
 
@@ -13,26 +20,44 @@ export default {
 
   data() {
     return {
-      isShow: "true",
-      fz: 20,
+      // 数据
+      navs: ["大学起点", "高中起点", "初中起点", "小学起点"],
+      activeIndex: 0, //设置一个变量来保存当前点击到的index
     };
   },
 
   mounted() {},
 
   methods: {
-    change() {
-      this.isShow = !this.isShow;
-    },
-    changeBig() {
-      this.fz++;
+    // 添加方法点击谁就将谁的index保存下来给一个变量
+    activeFn(val) {
+      // val代表当前索引
+      // console.log(val);
+      this.activeIndex = val;
     },
   },
 };
 </script>
 
 <style scoped>
-.active {
-  background-color: red;
+ul {
+  list-style: none;
+  border-radius: 10px;
+  width: 400px;
+  overflow: hidden;
+  padding: 0;
+}
+ul li {
+  float: left;
+  width: 100px;
+  height: 40px;
+  background-color: #ccc;
+  color: #fff;
+  text-align: center;
+  line-height: 40px;
+  cursor: pointer;
+}
+li.active {
+  background-color: blue;
 }
 </style>
