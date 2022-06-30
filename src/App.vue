@@ -1,9 +1,12 @@
 <template>
   <div id="app">
     <ul>
-      <li v-for="item in myArr" :key="item">{{ item }}</li>
+      <li v-for="(item, ind) in arr" :key="ind">
+        <span>{{ item }}</span>
+        <button @click="delFn(index)">删除</button>
+      </li>
     </ul>
-    <button @click="btnFn">走一走</button>
+    <button @click="addFn">生成</button>
   </div>
 </template>
 
@@ -11,15 +14,23 @@
 export default {
   data() {
     return {
-      myArr: ["帅哥", "美女", "程序猿"],
+      arr: [1, 5, 3],
     };
   },
   methods: {
-    btnFn() {
-      // 将数组第一个添加到最后一位
-      this.myArr.push(this.myArr[0]);
-      // 删除第一个
-      this.myArr.shift();
+    // 删除
+    delFn(ind) {
+      this.arr.splice(ind, 1);
+    },
+    // 添加
+    addFn() {
+      // 定义一个获取指定随机整数的方法;
+      function getRandomIntInclusive(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min; //含最大值，含最小值
+      }
+      const num = getRandomIntInclusive(1, 10);
+      // 数组追加随机数
+      this.arr.push(num);
     },
   },
 };
